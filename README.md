@@ -2,8 +2,6 @@
 
 ## Authors 
 - [ROCAMORA Enzo](https://github.com/uncyzer)
-- [COLIN Clément](https://github.com/ALonelyDuck)
-- [LAFAIRE Dylan](https://github.com/dragun06)
 
 > Le readme a été modifié et contient des informations complémentaires et des explications sur ce qui a été fait.
 > Ici vous pouvez trouver des informations par rapport à Gauniv.WebServer.
