@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Gauniv.Client.ViewModels"
+             xmlns:models="clr-namespace:Gauniv.Client.Models"
+             x:Class="Gauniv.Client.Pages.MyGames"
+             x:DataType="vm:MyGamesViewModel"
+             BackgroundColor="#1E1E1E"
+             Title="Mes Jeux">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" Padding="16">
+        <!-- En-tête et bouton refresh -->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto"
+              Margin="0,0,0,20">
+            <Label Text="Mes Jeux" 
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   VerticalOptions="Center"/>
+
+            <Button Grid.Column="1"
+                    Text="Rafraîchir"
+                    Command="{Binding RefreshCommand}"
+                    BackgroundColor="#4A4A4A"
+                    TextColor="White"
+                    HeightRequest="40"
+                    Margin="10,0,0,0"/>
+        </Grid>
+
+        <!-- Indicateur de chargement -->
+        <ActivityIndicator Grid.Row="1"
+                          IsVisible="{Binding IsLoading}"
+                          IsRunning="{Binding IsLoading}"
+                          Color="White"
+                          Margin="0,0,0,10"/>
+
+        <!-- Search Bar -->
+        <SearchBar Grid.Row="2"
+               Text="{Binding SearchText}"
+               Placeholder="Rechercher un jeu..."
+               BackgroundColor="#2D2D2D"
+               TextColor="White"
+               PlaceholderColor="Gray"/>
+
+        <!-- Sort Buttons -->
+        <ScrollView Grid.Row="3" 
+               Orientation="Horizontal">
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="{Binding NameSortText}"
+                    Command="{Binding SortByNameCommand}"
+                    BackgroundColor="#333333"
+                    TextColor="White"
+                    FontSize="14"
+                    Padding="15,8"/>
+
+                <Button Text="{Binding DateSortText}"
+                    Command="{Binding SortByDateCommand}"
+                    BackgroundColor="#333333"
+                    TextColor="White"
+                    FontSize="14"
+                    Padding="15,8"/>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <CollectionView Grid.Row="4" 
+                       ItemsSource="{Binding FilteredGames}">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" 
+                                   VerticalOptions="Center"
+                                   Spacing="16">
+                    <Label Text="Aucun jeu trouvé"
+                           TextColor="White"
+                           FontSize="20"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Rendez-vous dans la boutique pour découvrir nos jeux!"
+                           TextColor="Gray"
+                           FontSize="16"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:GameWithDownload">
+                    <Frame Margin="0,0,0,16"  
+                           Padding="16"
+                           BorderColor="#333333"
+                           CornerRadius="10"
+                           BackgroundColor="#2A2A2A"
+                           HasShadow="True">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Text="{Binding Title}"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="White"/>
+
+                                <HorizontalStackLayout Grid.Row="2"
+                                   Grid.Column="1"
+                                   Spacing="12"
+                                   HorizontalOptions="End">
+                                    <Button Text="Plus de détails"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyGamesViewModel}}, Path=DetailsCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="#4A4A4A"
+                                        TextColor="White"
+                                        FontSize="14"
+                                        CornerRadius="20"
+                                        Padding="16,8"/>
+
+                                    <Grid WidthRequest="120">
+                                        <!-- Bouton Télécharger -->
+                                        <Button IsVisible="{Binding IsDownloadButton}"
+                                            Text="Télécharger"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyGamesViewModel}}, Path=DownloadCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#2ECC71"
+                                            TextColor="White"
+                                            HeightRequest="35"
+                                            Margin="0"
+                                            Padding="15,0"/>
+
+                                        <!-- Barre de progression -->
+                                        <VerticalStackLayout IsVisible="{Binding IsDownloading}"
+                                            Spacing="4"
+                                            Margin="0">
+                                            <ProgressBar Progress="{Binding DownloadProgress}"
+                                                ProgressColor="#2ECC71"
+                                                HeightRequest="4"/>
+                                            <Label Text="{Binding DownloadProgressText}"
+                                               TextColor="White"
+                                               FontSize="12"
+                                               HorizontalOptions="Center"/>
+                                        </VerticalStackLayout>
+
+                                        <!-- Bouton Jouer -->
+                                        <Button IsVisible="{Binding IsPlayButton}"
+                                            Text="Jouer"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MyGamesViewModel}}, Path=PlayCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#4A90E2"
+                                            TextColor="White"
+                                            HeightRequest="35"
+                                            Margin="0"
+                                            Padding="15,0"/>
+                                    </Grid>
+                                </HorizontalStackLayout>
+                            </Grid>
+
+                            <StackLayout Grid.Row="1" 
+                                       Spacing="4"
+                                       Margin="0,8,0,0">
+                                <Label Text="{Binding PurchaseDate, StringFormat='Acheté le {0:dd/MM/yyyy}'}"
+                                       TextColor="#808080"/>
+                                <Label Text="{Binding TotalPlayTime, StringFormat='Temps de jeu: {0}'}"
+                                       TextColor="#808080"/>
+                            </StackLayout>
+
+                            <FlexLayout Grid.Row="3"
+                                    BindableLayout.ItemsSource="{Binding Categories}"
+                                    Direction="Row"
+                                    Wrap="Wrap"
+                                    JustifyContent="Start"
+                                    AlignItems="Center"
+                                    Margin="0,8,0,0">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="x:String">
+                                        <Frame BackgroundColor="#E0A868" 
+                                               Padding="8,4"
+                                               Margin="0,4,8,4"
+                                               CornerRadius="15">
+                                            <Label Text="{Binding .}"
+                                                   TextColor="White"
+                                                   FontSize="12"/>
+                                        </Frame>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </FlexLayout>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Gauniv.Client.ViewModel"
+             xmlns:api="clr-namespace:Gauniv.Network.ServerApi;assembly=Gauniv.Network"
+             x:Class="Gauniv.Client.Pages.Profile"
+             x:DataType="vm:ProfileViewModel"
+             Title="Profile">
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" 
+              Padding="20"
+              RowSpacing="20">
+
+            <!-- Error message -->
+            <Label Grid.Row="0"
+                   Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource StringNotNullOrEmptyBoolConverter}}"
+                   HorizontalOptions="Center"/>
+
+            <!-- Profile Information -->
+            <Border Grid.Row="1"
+                    Stroke="Gray"
+                    StrokeThickness="1"
+                    Padding="20">
+                <VerticalStackLayout Spacing="20">
+                    <Label Text="Profile Information"
+                           FontSize="24"
+                           HorizontalOptions="Center"/>
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Email:"
+                               FontAttributes="Bold"/>
+                        <Label Text="{Binding Email}"/>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Add Friend Section -->
+            <Border Grid.Row="2"
+                    Stroke="Gray"
+                    StrokeThickness="1"
+                    Padding="20">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Add Friend"
+                           FontSize="20"
+                           HorizontalOptions="Center"/>
+
+                    <Entry Placeholder="Enter friend's email"
+                           Text="{Binding NewFriendEmail}"
+                           Keyboard="Email"/>
+
+                    <Button Text="Add Friend"
+                            Command="{Binding AddFriendCommand}"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Friends List -->
+            <Border Grid.Row="3"
+                    Stroke="Gray"
+                    StrokeThickness="1"
+                    Padding="20">
+                <Grid RowDefinitions="Auto,*">
+                    <Label Text="Friends"
+                           FontSize="20"
+                           HorizontalOptions="Center"
+                           Grid.Row="0"
+                           Margin="0,0,0,15"/>
+
+                    <RefreshView Grid.Row="1"
+                                Command="{Binding RefreshFriendsCommand}"
+                                IsRefreshing="{Binding IsLoading}">
+                        <CollectionView ItemsSource="{Binding Friends}">
+                            <CollectionView.EmptyView>
+                                <VerticalStackLayout HorizontalOptions="Center"
+                                                   VerticalOptions="Center">
+                                    <Label Text="No friends yet"
+                                           FontSize="18"
+                                           TextColor="Gray"
+                                           HorizontalOptions="Center"/>
+                                    <Label Text="Add friends using their email address"
+                                           FontSize="14"
+                                           TextColor="Gray"
+                                           HorizontalOptions="Center"/>
+                                </VerticalStackLayout>
+                            </CollectionView.EmptyView>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="vm:FriendViewModel">
+                                    <Frame Margin="0,0,0,10"
+           Padding="15"
+           BorderColor="LightGray"
+           CornerRadius="10"
+           HasShadow="True">
+                                        <Grid RowDefinitions="Auto,Auto" 
+              RowSpacing="5">
+                                            <!-- Friend name -->
+                                            <Label Text="{Binding UserName}"
+                   FontAttributes="Bold"
+                   FontSize="16"/>
+
+                                            <!-- Status with dynamic color and game info combined -->
+                                            <Label Grid.Row="1"
+                   FontSize="14"
+                   Text="{Binding StatusText}">
+                                                <Label.TextColor>
+                                                    <MultiBinding Converter="{StaticResource UserStatusColorConverter}">
+                                                        <Binding Path="Status"/>
+                                                    </MultiBinding>
+                                                </Label.TextColor>
+                                            </Label>
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </RefreshView>
+                </Grid>
+            </Border>
+
+            <!-- Logout Button -->
+            <Button Grid.Row="4"
+                    Text="Logout"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    HeightRequest="50"/>
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator Grid.RowSpan="5"
+                             IsRunning="{Binding IsLoading}"
+                             IsVisible="{Binding IsLoading}"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"/>
+        </Grid>
+    </ScrollView>
+</ContentPage>

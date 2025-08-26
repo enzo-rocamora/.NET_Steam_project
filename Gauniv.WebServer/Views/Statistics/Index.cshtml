@@ -1,0 +1,116 @@
+﻿@model GlobalStatisticsViewModel
+@{
+    ViewData["Title"] = "Statistics";
+}
+
+<div class="container">
+    <h1 class="mb-4">Game Statistics</h1>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Game Search</h5>
+                    <div class="input-group">
+                        <input type="text" id="gameSearch" class="form-control" placeholder="Search for a game..." />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Games</h5>
+                    <p class="display-4">@Model.TotalGames</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Online Players</h5>
+                    <p class="display-4" id="onlinePlayers">@Model.CurrentOnlinePlayers</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">In-Game Players</h5>
+                    <p class="display-4" id="inGamePlayers">@Model.CurrentInGamePlayers</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Play Time</h5>
+                    <p class="display-4">@Model.FormattedTotalPlayTime</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Category Statistics</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Games</th>
+                            <th>Total Purchases</th>
+                            <th>Total Play Time</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cat in Model.CategoryStatistics.OrderByDescending(c => c.GamesCount))
+                        {
+                            <tr>
+                                <td>@cat.CategoryName</td>
+                                <td>@cat.GamesCount</td>
+                                <td>@cat.TotalPurchases</td>
+                                <td>@cat.FormattedTotalPlayTime</td>
+                                <td>
+                                    <a asp-action="CategoryDetails" asp-route-id="@cat.CategoryId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <script>
+        $(document).ready(function() {
+            $("#gameSearch").autocomplete({
+                source: function(request, response) {
+                    $.get("/Statistics/GameSearch", { term: request.term }, response);
+                },
+                minLength: 2,
+                select: function(event, ui) {
+                    window.location.href = '/Statistics/GameDetails/' + ui.item.id;
+                }
+            });
+        });
+    </script>
+}

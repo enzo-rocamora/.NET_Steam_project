@@ -1,0 +1,135 @@
+[gd_scene load_steps=3 format=3 uid="uid://b73f15mobtqvv"]
+
+[ext_resource type="Script" path="res://Scripts/CreateGamePopup.cs" id="1_ep5kj"]
+[ext_resource type="StyleBox" uid="uid://g3iraoofk8i4" path="res://Assets/PanelTexture.tres" id="2_sd0sx"]
+
+[node name="CreateGamePopup" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+script = ExtResource("1_ep5kj")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="CanvasLayer"]
+custom_minimum_size = Vector2(550, 500)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -200.0
+offset_right = 250.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("2_sd0sx")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Panel"]
+custom_minimum_size = Vector2(500, 400)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -220.0
+offset_right = 160.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Panel/MarginContainer"]
+custom_minimum_size = Vector2(0, 400)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="MarginContainer3" type="MarginContainer" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 30
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer/MarginContainer3"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Create Game"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxBoard" type="VBoxContainer" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_constants/separation = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer/VBoxBoard"]
+layout_mode = 2
+theme_override_constants/separation = 36
+
+[node name="NameBox" type="LineEdit" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer/VBoxBoard/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+placeholder_text = "Server Name"
+drag_and_drop_selection_enabled = false
+select_all_on_focus = true
+
+[node name="VBoxWidth" type="HBoxContainer" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer/VBoxBoard/VBoxContainer"]
+layout_mode = 2
+
+[node name="WidthBox2" type="Label" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer/VBoxBoard/VBoxContainer/VBoxWidth"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Width :"
+
+[node name="WidthBox" type="SpinBox" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer/VBoxBoard/VBoxContainer/VBoxWidth"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 18.0
+value = 9.0
+alignment = 1
+select_all_on_focus = true
+
+[node name="VBoxHeight" type="HBoxContainer" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer/VBoxBoard/VBoxContainer"]
+layout_mode = 2
+
+[node name="HeightBox2" type="Label" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer/VBoxBoard/VBoxContainer/VBoxHeight"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Height :"
+
+[node name="HeightBox" type="SpinBox" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer/VBoxBoard/VBoxContainer/VBoxHeight"]
+unique_name_in_owner = true
+layout_mode = 2
+max_value = 18.0
+value = 9.0
+alignment = 1
+select_all_on_focus = true
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ButtonGenerate" type="Button" parent="CanvasLayer/Panel/MarginContainer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 30
+text = "Generate Board"
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.359069, 0.359069, 0.359069, 1)
+
+[connection signal="pressed" from="CanvasLayer/Panel/MarginContainer/VBoxContainer/MarginContainer/ButtonGenerate" to="." method="_on_button_generate_pressed"]

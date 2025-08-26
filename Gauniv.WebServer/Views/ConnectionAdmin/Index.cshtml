@@ -1,0 +1,55 @@
+﻿@using Gauniv.WebServer.Services
+@using Gauniv.WebServer.Data
+@model IEnumerable<UserConnection>
+
+@{
+    ViewData["Title"] = "Active WebSocket Connections";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table" id="connectionsTable">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Status</th>
+                        <th>Current Game</th>
+                        <th>Connected Since</th>
+                        <th>Last Activity</th>
+                        <th>Connection ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var connection in Model.OrderByDescending(c => c.LastActivity))
+                    {
+                            <tr>
+                                <td>@connection.UserName</td>
+                                <td>
+                                    <span class="badge @(connection.CurrentStatus == UserStatus.Online ? "bg-success" : 
+                                                   connection.CurrentStatus == UserStatus.InGame ? "bg-primary" : "bg-secondary")">
+                                    @connection.CurrentStatus
+                                    </span>
+                                </td>
+                                <td>
+                                @if (connection.CurrentGameId.HasValue)
+                                {
+                                            <span>Game #@connection.CurrentGameId</span>
+                                }
+                                else
+                                {
+                                            <span class="text-muted">-</span>
+                                }
+                                </td>
+                                <td>@connection.ConnectedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>@connection.LastActivity.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td><code>@connection.ConnectionId</code></td>
+                            </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

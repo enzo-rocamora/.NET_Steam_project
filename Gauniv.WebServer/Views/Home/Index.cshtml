@@ -1,0 +1,37 @@
+﻿@model List<Gauniv.WebServer.Data.Game>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@{
+    ViewData["Title"] = "View";
+}
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+<h1>Video Games List</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+        </tr>
+}
+        <tr>
+            <td>
+                <img alt="League of legends" src="~/Content/LolImg.png" />
+                <h3 class="game-title">League of Legends</h3>
+                <h4 class="game-category">MOBA</h4>
+                <p class="game-desc">Jeu de mort</p>
+                <p class="game-price">50€</p>
+                <p class="game-lastPlayedAt">Joué pour la dernière fois le 21/10/2024</p>
+                <button>Acheter le jeu</button>
+                <button>Jouer au jeu</button>
+                <button>Plus de détails</button>
+
+            </td>
+        </tr>
+    </tbody>
+</table>

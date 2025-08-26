@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Gauniv.Client.ViewModel"
+             x:Class="Gauniv.Client.Pages.Store"
+             BackgroundColor="#1E1E1E"
+             Title="Store">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*" 
+          Padding="16"
+          RowSpacing="16">
+
+        <!-- Titre et bouton refresh -->
+        <Grid Grid.Row="0" 
+              ColumnDefinitions="*,Auto">
+            <Label Text="Game Store" 
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   VerticalOptions="Center"/>
+
+            <Button Grid.Column="1"
+                    Text="Rafraîchir"
+                    Command="{Binding RefreshCommand}"
+                    BackgroundColor="#4A4A4A"
+                    TextColor="White"
+                    HeightRequest="40"
+                    Margin="10,0,0,0"/>
+        </Grid>
+
+        <!-- Barre de recherche -->
+        <SearchBar Grid.Row="1"
+                   Text="{Binding SearchText}"
+                   Placeholder="{Binding SearchBarPlaceholder}"
+                   BackgroundColor="#2D2D2D"
+                   TextColor="White"
+                   PlaceholderColor="Gray"/>
+
+        <!-- Boutons de tri -->
+        <ScrollView Grid.Row="2" 
+                   Orientation="Horizontal">
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="{Binding NameSortText}"
+                        Command="{Binding SortByNameCommand}"
+                        BackgroundColor="#333333"
+                        TextColor="White"
+                        FontSize="14"
+                        Padding="15,8"/>
+
+                <Button Text="{Binding PriceSortText}"
+                        Command="{Binding SortByPriceCommand}"
+                        BackgroundColor="#333333"
+                        TextColor="White"
+                        FontSize="14"
+                        Padding="15,8"/>
+
+                <Button Text="{Binding DateSortText}"
+                        Command="{Binding SortByDateCommand}"
+                        BackgroundColor="#333333"
+                        TextColor="White"
+                        FontSize="14"
+                        Padding="15,8"/>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!-- Catégories de filtrage -->
+        <ScrollView Grid.Row="3" 
+                   Orientation="Horizontal">
+            <CollectionView ItemsSource="{Binding Categories}"
+                          HeightRequest="50">
+                <CollectionView.EmptyView>
+                    <Label Text="Aucune catégorie disponible"
+                           TextColor="Gray"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" 
+                                     ItemSpacing="8"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="{Binding BackgroundColor}"
+                               Padding="12,6"
+                               CornerRadius="20"
+                               HasShadow="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:StoreViewModel}}, Path=ToggleCategoryCommand}"
+                                    CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+                            <Label Text="{Binding Name}" 
+                                   TextColor="{Binding TextColor}"
+                                   FontSize="14"/>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+
+        <!-- Indicateur de chargement -->
+        <ActivityIndicator Grid.Row="4"
+                          IsVisible="{Binding IsLoading}"
+                          IsRunning="{Binding IsLoading}"
+                          Color="White"
+                          HorizontalOptions="Center"/>
+
+        <!-- Liste des jeux -->
+        <ScrollView Grid.Row="5">
+            <CollectionView ItemsSource="{Binding Games}"
+                          Margin="0">
+                <CollectionView.EmptyView>
+                    <Grid RowDefinitions="Auto,Auto" 
+                          VerticalOptions="Center" 
+                          HorizontalOptions="Center"
+                          RowSpacing="12">
+                        <VerticalStackLayout Grid.Row="1" 
+                                           Spacing="8"
+                                           HorizontalOptions="Center">
+                            <Label Text="Aucun jeu disponible"
+                                   TextColor="White"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Vous possédez déjà tous les jeux ou notre catalogue est vide pour le moment."
+                                   TextColor="Gray"
+                                   FontSize="14"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,0,0,16"  
+                               Padding="16"
+                               BorderColor="#333333"
+                               CornerRadius="10"
+                               BackgroundColor="#2A2A2A"
+                               HasShadow="True">
+                            <Grid RowDefinitions="Auto,Auto,Auto"
+                                  ColumnDefinitions="*,Auto"
+                                  RowSpacing="12">
+
+                                <Label Text="{Binding Title}"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       Grid.ColumnSpan="2"/>
+
+                                <Label Text="{Binding CreatedAt, StringFormat='Créé le {0:dd/MM/yyyy}'}"
+                                       Grid.Row="1"
+                                       Grid.ColumnSpan="2"
+                                       FontSize="12"
+                                       TextColor="White"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Start"/>
+
+                                <Label Text="{Binding Price, StringFormat='{0:C}'}"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        FontSize="18"
+                                        FontAttributes="Bold"
+                                        TextColor="#2ECC71"
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="End"/>
+
+                                <HorizontalStackLayout Grid.Row="2"
+                                                     Grid.Column="0"
+                                                     Spacing="12"
+                                                     VerticalOptions="Center">
+                                    <FlexLayout BindableLayout.ItemsSource="{Binding Categories}"
+                                              Direction="Row"
+                                              Wrap="NoWrap"
+                                              JustifyContent="Start"
+                                              AlignItems="Center">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate>
+                                                <Frame BackgroundColor="#E0A868" 
+                                                       Padding="4,4"
+                                                       Margin="0,0,0,0"
+                                                       CornerRadius="5"
+                                                       HasShadow="False">
+                                                    <Label Text="{Binding Name}" 
+                                                           FontSize="12"
+                                                           TextColor="White"/>
+                                                </Frame>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </FlexLayout>
+                                </HorizontalStackLayout>
+
+                                <HorizontalStackLayout Grid.Row="2"
+                                                     Grid.Column="1"
+                                                     Spacing="12"
+                                                     HorizontalOptions="End">
+                                    <Button Text="Plus de détails"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:StoreViewModel}}, Path=DetailsCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#4A4A4A"
+                                            TextColor="White"
+                                            FontSize="14"
+                                            CornerRadius="20"
+                                            Padding="16,8"/>
+
+                                    <Button Text="Buy Game"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:StoreViewModel}}, Path=BuyCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#2ECC71"
+                                            TextColor="White"
+                                            FontSize="14"
+                                            CornerRadius="20"
+                                            Padding="16,8"/>
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+    </Grid>
+</ContentPage>

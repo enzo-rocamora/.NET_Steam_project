@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Gauniv.Client.ViewModel"
+             x:Class="Gauniv.Client.Pages.GameDetails"
+             x:DataType="vm:GameDetailsViewModel"
+             BackgroundColor="#1E1E1E"
+             Title="Détails du Jeu">
+
+    <ScrollView>
+        <StackLayout Padding="20">
+            <!-- Titre -->
+            <Label Text="{Binding Game.Title}" 
+                   FontSize="28" 
+                   FontAttributes="Bold" 
+                   TextColor="White"
+                   Margin="0,0,0,20"/>
+
+            <!-- Description -->
+            <Frame BorderColor="Gray" 
+                   Padding="15" 
+                   Margin="0,0,0,20"
+                   BackgroundColor="#2A2A2A">
+                <Label Text="{Binding Game.Description}" 
+                       FontSize="16"
+                       TextColor="White"/>
+            </Frame>
+
+            <!-- Catégories -->
+            <Label Text="Catégories" 
+                   FontSize="20" 
+                   FontAttributes="Bold"
+                   TextColor="White" 
+                   Margin="0,0,0,10"/>
+
+            <CollectionView ItemsSource="{Binding Game.Categories}"
+                          Margin="0,0,0,20">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" 
+                                     ItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#E0A868" 
+                               Padding="10,5"
+                               HasShadow="True">
+                            <Label Text="{Binding Name}" 
+                                   FontSize="14"
+                                   TextColor="White"/>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Section pour jeu non possédé -->
+            <StackLayout IsVisible="{Binding IsNotOwned}">
+                <Grid ColumnDefinitions="Auto,*" 
+                      Margin="0,0,0,20">
+                    <Label Text="Prix: " 
+                           FontSize="20" 
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           VerticalOptions="Center"/>
+                    <Label Grid.Column="1" 
+                           Text="{Binding Game.Price, StringFormat='{0:C}'}" 
+                           FontSize="20"
+                           TextColor="#2ECC71"
+                           VerticalOptions="Center"/>
+                </Grid>
+
+                <Button Text="Acheter"
+                        Command="{Binding BuyCommand}"
+                        BackgroundColor="#2ecc71"
+                        TextColor="White"
+                        HeightRequest="50"
+                        FontSize="18"
+                        Margin="0,20,0,0"/>
+            </StackLayout>
+
+            <!-- Section pour jeu possédé -->
+            <StackLayout IsVisible="{Binding IsOwned}"
+                        Spacing="10">
+                <Label Text="Date d'achat"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="White"/>
+                <Label Text="{Binding Game.CreatedAt, StringFormat='{0:dd/MM/yyyy}'}"
+                       TextColor="Gray"
+                       Margin="0,0,0,20"/>
+
+                <!-- Actions -->
+                <Grid WidthRequest="200" 
+                      HorizontalOptions="Start">
+                    <!-- Bouton Télécharger -->
+                    <Button IsVisible="{Binding IsDownloadButton}"
+                            Text="Télécharger"
+                            Command="{Binding DownloadCommand}"
+                            BackgroundColor="#2ECC71"
+                            TextColor="White"
+                            HeightRequest="40"
+                            Margin="0"/>
+
+                    <!-- Barre de progression -->
+                    <VerticalStackLayout IsVisible="{Binding IsDownloading}"
+                                       Spacing="4">
+                        <ProgressBar Progress="{Binding DownloadProgress}"
+                                    ProgressColor="#2ECC71"
+                                    HeightRequest="4"/>
+                        <Label Text="{Binding DownloadProgressText}"
+                               TextColor="White"
+                               FontSize="12"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+
+                    <!-- Bouton Jouer -->
+                    <Button IsVisible="{Binding IsPlayButton}"
+                            Text="Jouer"
+                            Command="{Binding PlayCommand}"
+                            BackgroundColor="#4A90E2"
+                            TextColor="White"
+                            HeightRequest="40"
+                            Margin="0"/>
+                </Grid>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,175 @@
+﻿@model IEnumerable<OnlineUserViewModel>
+@{
+    ViewData["Title"] = "User Status";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>User Status</h1>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-secondary active" data-filter="all">All</button>
+            <button type="button" class="btn btn-outline-success" data-filter="online">Online</button>
+            <button type="button" class="btn btn-outline-primary" data-filter="ingame">In Game</button>
+            <button type="button" class="btn btn-outline-secondary" data-filter="offline">Offline</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Status</th>
+                            <th>Last Activity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr data-user-id="@user.UserId" data-status="@user.Status.ToString().ToLower()">
+                                <td>@user.UserName</td>
+                                <td>
+                                    <span class="badge @user.StatusClass">@user.StatusText</span>
+                                    @if (user.CurrentGameId.HasValue)
+                                    {
+                                        <span class="ms-2 game-name"></span>
+                                        <span class="ms-2 game-name">(Playing @user.gameName)</span>
+                                    }
+                                </td>
+                                <td class="last-activity" data-timestamp="@user.LastActivity.ToString("O")">
+                                    @user.LastActivity.ToString("g")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script>
+        $(document).ready(function() {
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/hubs/online", {
+                    // Ajouter le token d'authentification si nécessaire
+                    accessTokenFactory: () => {
+                        // Si vous utilisez des cookies, ce n'est pas nécessaire
+                        // Sinon, retournez votre token JWT ici
+                        return localStorage.getItem("jwt_token");
+                    }
+                })
+                .withAutomaticReconnect()
+                .build();
+
+            // Filtrage
+            $('[data-filter]').click(function() {
+                const filter = $(this).data('filter');
+                $(this).addClass('active').siblings().removeClass('active');
+
+                if (filter === 'all') {
+                    $('#usersTable tbody tr').show();
+                } else {
+                    $('#usersTable tbody tr').hide();
+                    $(`#usersTable tbody tr[data-status="${filter}"]`).show();
+                }
+            });
+
+            // Mettre à jour le statut d'un utilisateur
+            function updateUserStatus(data) {
+                const row = $(`tr[data-user-id="${data.userId}"]`);
+                if (row.length) {
+                    // Mettre à jour le status
+                    const statusCell = row.find('td:eq(1)');
+                    let statusHtml = `<span class="badge ${getStatusClass(data.status)}">${getStatusText(data.status)}</span>`;
+                    if (data.gameId) {
+                        statusHtml += ` <span class="ms-2 game-name">(Playing ${data.gameName})</span>`;
+                    }
+                    statusCell.html(statusHtml);
+
+                    // Mettre à jour l'attribut de statut pour le filtrage
+                    row.attr('data-status', data.status.toLowerCase());
+
+                    // Mettre à jour le timestamp
+                    const lastActivityCell = row.find('.last-activity');
+                    lastActivityCell.attr('data-timestamp', data.timestamp);
+                    lastActivityCell.text(new Date(data.timestamp).toLocaleString());
+                }
+            }
+
+            function getStatusClass(status) {
+                switch(status) {
+                    case 1: return 'bg-success';   // Online
+                    case 2: return 'bg-primary';   // InGame
+                    default: return 'bg-secondary'; // Offline
+                }
+            }
+
+            function getStatusText(status) {
+                switch(status) {
+                    case 1: return 'Online';
+                    case 2: return 'In Game';
+                    default: return 'Offline';
+                }
+            }
+
+            // Gérer l'erreur de connexion
+            connection.onclose(error => {
+                if (error) {
+                    console.error('SignalR Connection Error:', error);
+                    // Optionnel : afficher un message à l'utilisateur
+                    if (error.message === "Unauthorized") {
+                        // Rediriger vers la page de connexion ou afficher un message
+                        window.location.href = '/Account/Login';
+                    }
+                }
+            });
+
+            // Gérer les événements SignalR
+            connection.on("UserStatusChanged", function(data) {
+                updateUserStatus(data);
+            });
+
+            // Démarrer la connexion
+            connection.start()
+                .then(function() {
+                    console.log("Connected to SignalR hub");
+                })
+                .catch(function(err) {
+                    console.error(err.toString());
+                    if (err.statusCode === 401) {
+                        // Rediriger vers la page de connexion
+                        window.location.href = '/Account/Login';
+                    }
+                });
+
+            // Mettre à jour les timestamps périodiquement
+            setInterval(function() {
+                $('.last-activity').each(function() {
+                    const timestamp = new Date($(this).attr('data-timestamp'));
+                    $(this).text(timestamp.toLocaleString());
+                });
+            }, 60000);
+        });
+    </script>
+
+    <style>
+        .badge {
+            font-size: 0.9em;
+            padding: 0.5em 0.7em;
+        }
+
+        .game-name {
+            font-style: italic;
+            color: #666;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+    </style>
+}

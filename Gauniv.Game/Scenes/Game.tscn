@@ -1,0 +1,170 @@
+[gd_scene load_steps=2 format=3 uid="uid://byd0sgx1in5tw"]
+
+[ext_resource type="Script" path="res://Scripts/Game.cs" id="1_n4ni3"]
+
+[node name="Game" type="Node2D"]
+top_level = true
+script = ExtResource("1_n4ni3")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="PanelLeft" type="Panel" parent="HBoxContainer"]
+custom_minimum_size = Vector2(396, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelLeft"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 60
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelLeft/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ServerName" type="Label" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Server :"
+
+[node name="GameMaster" type="Label" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "GameMaster :"
+
+[node name="PlayerNumber" type="Label" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Players :"
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_top = 200
+
+[node name="LabelTimer" type="Label" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "0.000"
+
+[node name="PickColorContainer" type="MarginContainer" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_top = 200
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer/PickColorContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer/PickColorContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Color Picker :"
+
+[node name="Label2" type="Label" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer/PickColorContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Create your own board and pick your colors !"
+autowrap_mode = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer/PickColorContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="ColorPicker" type="ColorPickerButton" parent="HBoxContainer/PanelLeft/MarginContainer/VBoxContainer/PickColorContainer/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+edit_alpha = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+max_value = 15.0
+fill_mode = 1
+show_percentage = false
+
+[node name="GameContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(1120, 0)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GridContainer" type="GridContainer" parent="HBoxContainer/VBoxContainer/GameContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="PanelRight" type="Panel" parent="HBoxContainer"]
+custom_minimum_size = Vector2(396, 0)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelRight"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 60
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/PanelRight/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/PanelRight/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Players :"
+
+[node name="PlayerList" type="ItemList" parent="HBoxContainer/PanelRight/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 600)
+layout_mode = 2
+theme_override_constants/v_separation = 10
+theme_override_font_sizes/font_size = 30
+allow_search = false
+auto_height = true
+fixed_column_width = 36
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelRight/MarginContainer"]
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="HBoxContainer/PanelRight/MarginContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_font_sizes/font_size = 30
+text = "Send Board !"
+
+[node name="CountDownTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
+
+[connection signal="pressed" from="HBoxContainer/PanelRight/MarginContainer/MarginContainer/StartButton" to="." method="_on_button_start_pressed"]
+[connection signal="timeout" from="CountDownTimer" to="." method="OnCountDownTimerTimeout"]

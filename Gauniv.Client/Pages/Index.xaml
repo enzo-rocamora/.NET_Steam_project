@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Gauniv.Client.ViewModel"
+             x:Class="Gauniv.Client.Pages.Index"
+             x:DataType="vm:IndexViewModel">
+
+    <ScrollView>
+        <Grid RowDefinitions="Auto,Auto,*" 
+              Padding="20" 
+              RowSpacing="20">
+
+            <!-- Message d'erreur -->
+            <Label Grid.Row="0"
+                   Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   HorizontalOptions="Center"/>
+
+            <!-- Section Inscription -->
+            <Border Grid.Row="1"
+                    Stroke="Gray"
+                    StrokeThickness="1"
+                    Padding="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Inscription"
+                           FontSize="24"
+                           HorizontalOptions="Center"/>
+
+                    <Entry Placeholder="Prénom"
+                           Text="{Binding FirstName}"/>
+
+                    <Entry Placeholder="Nom"
+                           Text="{Binding LastName}"/>
+
+                    <Entry Placeholder="Email"
+                           Text="{Binding Email}"
+                           Keyboard="Email"/>
+
+                    <Entry Placeholder="Mot de passe"
+                           Text="{Binding Password}"
+                           IsPassword="True"/>
+
+                    <Entry Placeholder="Confirmer le mot de passe"
+                           Text="{Binding ConfirmPassword}"
+                           IsPassword="True"/>
+
+                    <Button Text="S'inscrire"
+                            Command="{Binding RegisterCommand}"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Section Connexion -->
+            <Border Grid.Row="2"
+                    Stroke="Gray"
+                    StrokeThickness="1"
+                    Padding="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Connexion"
+                           FontSize="24"
+                           HorizontalOptions="Center"/>
+
+                    <Entry Placeholder="Email"
+                           Text="{Binding LoginEmail}"
+                           Keyboard="Email"/>
+
+                    <Entry Placeholder="Mot de passe"
+                           Text="{Binding LoginPassword}"
+                           IsPassword="True"/>
+
+                    <Button Text="Se connecter"
+                            Command="{Binding LoginCommand}"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Indicateur de chargement -->
+            <ActivityIndicator Grid.Row="3"
+                             IsRunning="{Binding IsLoading}"
+                             IsVisible="{Binding IsLoading}"
+                             HorizontalOptions="Center"/>
+
+        </Grid>
+    </ScrollView>
+</ContentPage>

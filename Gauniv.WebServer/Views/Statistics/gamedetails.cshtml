@@ -1,0 +1,97 @@
+﻿@model GameStatisticsViewModel
+@{
+    ViewData["Title"] = $"Game Statistics - {Model.GameTitle}";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>@Model.GameTitle</h1>
+        <a asp-action="Index" class="btn btn-secondary">Back to Statistics</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Purchases</h5>
+                    <p class="display-4">@Model.TotalPurchases</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Online Players</h5>
+                    <p class="display-4">@Model.CurrentPlayers</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Play Time</h5>
+                    <p class="display-4">@Model.FormattedTotalPlayTime</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Average Play Time</h5>
+                    <p class="display-4">@Model.FormattedAveragePlayTime</p>
+                    <small>Per purchase</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Categories</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Categories.Any())
+            {
+                foreach (var category in Model.Categories)
+                {
+                    <span class="badge bg-primary me-2 mb-2">@category</span>
+                }
+            }
+            else
+            {
+                <p class="text-muted mb-0">No categories assigned</p>
+            }
+        </div>
+    </div>
+
+    @* Vous pourriez ajouter ici un graphique des joueurs en ligne au fil du temps, 
+       ou un tableau des meilleurs joueurs, etc. *@
+</div>
+
+@section Scripts {
+    <script>
+        // Futur emplacement pour le code de mise à jour en temps réel des joueurs en ligne
+    </script>
+
+    <style>
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        .display-4 {
+            font-size: 2.5rem;
+        }
+
+        .badge {
+            font-size: 1em;
+            padding: 0.5em 1em;
+        }
+    </style>
+}

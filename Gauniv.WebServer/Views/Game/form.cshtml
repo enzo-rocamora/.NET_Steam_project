@@ -1,0 +1,207 @@
+﻿@model Gauniv.WebServer.Models.GameCreateViewModel
+@using Gauniv.WebServer.Data
+
+@{
+    ViewData["Title"] = ViewData["Title"] ?? "Game";
+    var action = ViewData["Action"]?.ToString() ?? "Create";
+    var categories = (IEnumerable<Category>)ViewData["Categories"];
+    var selectedCategories = (IEnumerable<int>)ViewData["SelectedCategories"];
+}
+
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="@action" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        @if (action == "Edit")
+                        {
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="ExistingPayloadPath" />
+                        }
+
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label">Title</label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Price" class="form-label">Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text">€</span>
+                                <input asp-for="Price" class="form-control" type="number" step="0.01" min="0" />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="GameFile" class="form-label">Game File</label>
+                            <input type="file" class="form-control" asp-for="GameFile" accept=".exe,.zip,.rar,.7z" />
+                            <span asp-validation-for="GameFile" class="text-danger"></span>
+                            @if (!string.IsNullOrEmpty(Model?.ExistingPayloadPath))
+                            {
+                                <small class="text-muted d-block mt-1">Current file: @Model.ExistingPayloadPath</small>
+                                <small class="text-muted d-block">Size: @(Model.ExistingFileSize / 1024 / 1024) MB</small>
+                            }
+                            <div class="form-text">Allowed file types: .exe, .zip, .rar, .7z</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Categories</label>
+                            <div class="input-group">
+                                <input type="text" id="categoryInput" class="form-control" placeholder="Type to search categories..." />
+                                <button type="button" class="btn btn-outline-secondary" id="addCategory">Add</button>
+                            </div>
+                            <div id="selectedCategories" class="mt-2">
+                                @foreach (var category in categories.Where(c => selectedCategories.Contains(c.Id)))
+                                {
+                                    <span class="badge bg-primary me-2 mb-2 category-badge">
+                                        @category.Name
+                                        <button type="button" class="btn-close btn-close-white" aria-label="Remove"></button>
+                                        <input type="hidden" name="SelectedCategories" value="@category.Id" />
+                                    </span>
+                                }
+                            </div>
+                            <div id="categoryError" class="text-danger"></div>
+                            @if (!selectedCategories.Any())
+                            {
+                                <div class="form-text text-warning">At least one category is recommended</div>
+                            }
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Help</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Game File Requirements:</h6>
+                    <ul>
+                        <li>Supported formats: .exe, .zip, .rar, .7z</li>
+                        <li>The file will be encrypted and stored securely</li>
+                        <li>Players can only download games they own</li>
+                    </ul>
+
+                    <h6>Categories:</h6>
+                    <ul>
+                        <li>Start typing to search categories</li>
+                        <li>Click "Add" or press Enter to add a category</li>
+                        <li>Click the X to remove a category</li>
+                        <li>At least one category is recommended</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <script>
+        $(document).ready(function() {
+            const categories = @Html.Raw(Json.Serialize(categories.Select(c => new { id = c.Id, label = c.Name })));
+
+            // Initialize autocomplete
+            $("#categoryInput").autocomplete({
+                source: categories.map(c => c.label),
+                minLength: 1
+            });
+
+            // Function to add a category badge
+            function addCategory() {
+                const input = $("#categoryInput");
+                const categoryName = input.val().trim();
+
+                if (!categoryName) return;
+
+                const category = categories.find(c => c.label.toLowerCase() === categoryName.toLowerCase());
+
+                if (!category) {
+                    $("#categoryError").text("This category doesn't exist");
+                    return;
+                }
+
+                if ($(`input[value="${category.id}"]`).length > 0) {
+                    $("#categoryError").text("This category is already selected");
+                    return;
+                }
+
+                $("#categoryError").text("");
+
+                const badge = $(`
+                    <span class="badge bg-primary me-2 mb-2 category-badge">
+                        ${category.label}
+                        <button type="button" class="btn-close btn-close-white" aria-label="Remove"></button>
+                        <input type="hidden" name="SelectedCategories" value="${category.id}" />
+                    </span>
+                `);
+
+                $("#selectedCategories").append(badge);
+                input.val("");
+            }
+
+            // Add category on button click
+            $("#addCategory").click(addCategory);
+
+            // Add category on Enter key
+            $("#categoryInput").keypress(function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    addCategory();
+                }
+            });
+
+            // Remove category badge
+            $(document).on("click", ".category-badge .btn-close", function() {
+                $(this).closest(".category-badge").remove();
+            });
+        });
+    </script>
+
+    <style>
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 1050;
+        }
+
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5em 0.7em;
+        }
+
+            .category-badge .btn-close {
+                width: 0.5em;
+                height: 0.5em;
+                margin-left: 0.5em;
+                cursor: pointer;
+            }
+    </style>
+}

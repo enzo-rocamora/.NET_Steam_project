@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Gauniv.WebServer.Data.User>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h1>Users</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Games Owned</th>
+                <th>Last Login</th>
+                <th>Member Since</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@($"{user.FirstName} {user.LastName}")</td>
+                    <td>@user.Email</td>
+                    <td>@user.OwnedGames.Count()</td>
+                    <td>
+                        @if (user.LastLoginAt != default)
+                        {
+                            @user.LastLoginAt.ToString("g")
+                        }
+                        else
+                        {
+                            <span class="text-muted">Never</span>
+                        }
+                    </td>
+                    <td>@user.CreatedAt.ToString("d")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@user.Id" class="btn btn-sm btn-info">
+                            <i class="bi bi-info-circle"></i> Details
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

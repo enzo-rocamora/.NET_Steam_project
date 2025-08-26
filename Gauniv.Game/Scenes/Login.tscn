@@ -1,0 +1,159 @@
+[gd_scene load_steps=4 format=3 uid="uid://cfdjrl6w6ihuv"]
+
+[ext_resource type="Script" path="res://Scripts/Login.cs" id="1_vvdoc"]
+[ext_resource type="Texture2D" uid="uid://g4l6x1tc6b8a" path="res://Assets/chess_background.jpg" id="2_1phw3"]
+[ext_resource type="StyleBox" uid="uid://g3iraoofk8i4" path="res://Assets/PanelTexture.tres" id="3_7qfy8"]
+
+[node name="Login" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vvdoc")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Control" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_1phw3")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="CanvasLayer/Control"]
+light_mask = 2
+visibility_layer = 2
+color = Color(0.458405, 0.458405, 0.458405, 1)
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 3
+
+[node name="PanelLeft" type="Control" parent="GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CenterContainer" type="VBoxContainer" parent="GridContainer"]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelTop" type="Control" parent="GridContainer/CenterContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="GameLabel" type="Label" parent="GridContainer/CenterContainer/PanelTop"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "Le Jeu du damier"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="Panel" type="Panel" parent="GridContainer/CenterContainer"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("3_7qfy8")
+
+[node name="MarginLogin" type="MarginContainer" parent="GridContainer/CenterContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+
+[node name="VBoxLogin" type="VBoxContainer" parent="GridContainer/CenterContainer/Panel/MarginLogin"]
+layout_mode = 2
+
+[node name="MarginLabel" type="MarginContainer" parent="GridContainer/CenterContainer/Panel/MarginLogin/VBoxLogin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_bottom = 60
+
+[node name="Label" type="Label" parent="GridContainer/CenterContainer/Panel/MarginLogin/VBoxLogin/MarginLabel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Login"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GridContainer/CenterContainer/Panel/MarginLogin/VBoxLogin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Username" type="LineEdit" parent="GridContainer/CenterContainer/Panel/MarginLogin/VBoxLogin/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+placeholder_text = " Username"
+max_length = 34
+drag_and_drop_selection_enabled = false
+select_all_on_focus = true
+
+[node name="Password" type="LineEdit" parent="GridContainer/CenterContainer/Panel/MarginLogin/VBoxLogin/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+placeholder_text = " Password"
+max_length = 34
+drag_and_drop_selection_enabled = false
+secret = true
+
+[node name="MarginContainer" type="MarginContainer" parent="GridContainer/CenterContainer/Panel/MarginLogin/VBoxLogin/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 10
+
+[node name="ErrorLabel" type="Label" parent="GridContainer/CenterContainer/Panel/MarginLogin/VBoxLogin/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 0.0588235, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "Couldn't reach the server !"
+
+[node name="MarginContainer" type="MarginContainer" parent="GridContainer/CenterContainer/Panel/MarginLogin/VBoxLogin"]
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_constants/margin_bottom = 30
+
+[node name="ButtonLogin" type="Button" parent="GridContainer/CenterContainer/Panel/MarginLogin/VBoxLogin/MarginContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_font_sizes/font_size = 30
+text = "Login"
+
+[node name="PanelBottom" type="Control" parent="GridContainer/CenterContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PanelRight" type="Control" parent="GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="GridContainer/CenterContainer/Panel/MarginLogin/VBoxLogin/MarginContainer/ButtonLogin" to="." method="_on_login_pressed"]

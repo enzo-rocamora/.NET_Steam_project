@@ -1,0 +1,126 @@
+﻿@model CategoryStatisticsViewModel
+@{
+    ViewData["Title"] = $"Category Statistics - {Model.CategoryName}";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>@Model.CategoryName Statistics</h1>
+        <a asp-action="Index" class="btn btn-secondary">Back to Statistics</a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Global Category Stats Cards -->
+        <div class="col-md-4">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Games</h5>
+                    <p class="display-4">@Model.GamesCount</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Purchases</h5>
+                    <p class="display-4">@Model.TotalPurchases</p>
+                    <p class="card-text">
+                        Average: @(Model.GamesCount > 0 ? Math.Round((double)Model.TotalPurchases / Model.GamesCount, 1) : 0) per game
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Play Time</h5>
+                    <p class="display-4">@Model.FormattedTotalPlayTime</p>
+                    <p class="card-text">
+                        Average per purchase: @Model.FormattedAveragePlayTime
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Games Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Games in this Category</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="gamesTable">
+                    <thead>
+                        <tr>
+                            <th>Game</th>
+                            <th>Purchases</th>
+                            <th>Total Play Time</th>
+                            <th>Average Play Time</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var game in Model.GameStatistics.OrderByDescending(g => g.Purchases))
+                        {
+                            <tr>
+                                <td>@game.GameTitle</td>
+                                <td>@game.Purchases</td>
+                                <td>@game.FormattedPlayTime</td>
+                                <td>@game.FormattedAveragePlayTime</td>
+                                <td>
+                                    <a asp-action="GameDetails" asp-route-id="@game.GameId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Details
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#gamesTable').DataTable({
+                order: [[1, 'desc']], // Sort by purchases by default
+                pageLength: 10,
+                language: {
+                    search: "Search games:",
+                    lengthMenu: "Show _MENU_ games per page",
+                },
+                columnDefs: [
+                    { targets: -1, orderable: false } // Disable sorting on the actions column
+                ]
+            });
+        });
+    </script>
+
+    <style>
+        .card {
+            transition: transform 0.2s;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 1rem;
+        }
+
+        .dataTables_wrapper .dataTables_length {
+            margin-bottom: 1rem;
+        }
+    </style>
+}

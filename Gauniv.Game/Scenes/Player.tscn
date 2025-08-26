@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://njqtwrpaf2wc"]
+
+[ext_resource type="Texture2D" uid="uid://psww40y5e1s4" path="res://Assets/PlayerIcone.png" id="1_6c2qo"]
+
+[node name="Player" type="MarginContainer"]
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_right = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("1_6c2qo")
+
+[node name="PlayerNameLabel" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "Player 1"
+horizontal_alignment = 1
+vertical_alignment = 1

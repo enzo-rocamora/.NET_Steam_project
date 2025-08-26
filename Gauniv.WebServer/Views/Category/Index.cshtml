@@ -1,0 +1,119 @@
+﻿@model IEnumerable<Gauniv.WebServer.Data.Category>
+@{
+    ViewData["Title"] = "Categories";
+    var isAdmin = ViewData["IsAdmin"] as bool? ?? false;
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Categories</h1>
+        @if (isAdmin)
+        {
+            <a asp-action="Form" class="btn btn-primary">Create New</a>
+        }
+    </div>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var category in Model)
+        {
+            <div class="col">
+                <div class="card h-100 category-card"
+                     role="button"
+                     onclick="window.location.href='@Url.Action("Index", "Game", new { categories = new[] { category.Id } })'">
+                    <div class="card-body">
+                        <h5 class="card-title">@category.Name</h5>
+                        <p class="card-text">
+                            @if (!string.IsNullOrEmpty(category.Description))
+                            {
+                                @category.Description
+                            }
+                            else
+                            {
+                                <span class="text-muted">No description available</span>
+                            }
+                        </p>
+                    </div>
+                    @if (isAdmin)
+                    {
+                        <div class="card-footer bg-transparent">
+                            <div class="btn-group" role="group" onclick="event.stopPropagation();">
+                                <a asp-action="Form" asp-route-id="@category.Id" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@category.Id" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info mt-4">
+            No categories available.
+            @if (isAdmin)
+            {
+                <a asp-action="Form" class="alert-link">Create one now</a>
+            }
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .category-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+            .category-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            }
+
+            /* Override cursor for buttons to show they're clickable separately */
+            .category-card .btn {
+                cursor: pointer;
+            }
+
+            /* Adding visual feedback for card click */
+            .category-card:active {
+                transform: translateY(-2px);
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Prevent card click when clicking buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminButtons = document.querySelectorAll('.btn-group .btn');
+            adminButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        });
+    </script>
+}

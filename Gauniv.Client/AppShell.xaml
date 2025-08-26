@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:Gauniv.Client"
+       xmlns:pages="clr-namespace:Gauniv.Client.Pages"
+       x:Class="Gauniv.Client.AppShell"
+       FlyoutBehavior="Disabled">
+
+    <!-- Route de connexion (visible par défaut) -->
+    <ShellContent Route="index"
+                  ContentTemplate="{DataTemplate pages:Index}"/>
+
+    <!-- Routes protégées (cachées par défaut) -->
+    <TabBar x:Name="MainTabBar" IsVisible="False">
+        <Tab Title="Store" Route="store">
+            <ShellContent ContentTemplate="{DataTemplate pages:Store}"/>
+        </Tab>
+
+        <Tab Title="Mes jeux" Route="mygames">
+            <ShellContent ContentTemplate="{DataTemplate pages:MyGames}"/>
+        </Tab>
+
+        <Tab Title="Profil" Route="profile">
+            <ShellContent ContentTemplate="{DataTemplate pages:Profile}"/>
+        </Tab>
+    </TabBar>
+
+</Shell>
