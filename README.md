@@ -1,7 +1,7 @@
 # Plateforme de distribution de contenu + Editeur
 
 ## Authors 
-- [ROCAMORA Enzo](https://github.com/uncyzer)
+- [ROCAMORA Enzo](https://github.com/enzo-rocamora)
 
 > Le readme a été modifié et contient des informations complémentaires et des explications sur ce qui a été fait.
 > Ici vous pouvez trouver des informations par rapport à Gauniv.WebServer.
